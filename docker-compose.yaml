@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/backend.dockerfile
+    ports:
+      - '80:80'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/timely
+    depends_on:
+      - postgres
+  postgres:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/postgres.dockerfile
+    ports:
+      - 5432:5432
+    user: postgres
+    restart: always
+    environment:
+      - 'POSTGRES_PASSWORD=postgres'
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+volumes:
+  database-data:
