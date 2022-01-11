@@ -23,7 +23,7 @@ services:
     restart: always
     environment:
       - 'POSTGRES_PASSWORD=postgres'
-    volumes:
-      - database-data:/var/lib/postgresql/data/
-volumes:
-  database-data:
+    # volumes:
+    #   - database-data:/var/lib/postgresql/data/
+# volumes:
+#   # database-data:

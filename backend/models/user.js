@@ -204,7 +204,8 @@ class User {
       `UPDATE users 
     SET reset_password_token = $1, reset_password_expires = TO_TIMESTAMP($2), reset_password_token_used = $3
     WHERE username = $4
-    RETURNING username, first_name AS "firstName", last_name AS "lastName",
+    RETURNING username, 
+    first_name AS "firstName", last_name AS "lastName",
     email, reset_password_token AS "resetPasswordToken",
     reset_password_expires AS "resetPasswordExpires",
     reset_password_token_used AS "resetPasswordTokenUsed",
@@ -216,11 +217,13 @@ class User {
   }
 
   static async findUserEmail(email) {
-    let result = await db.query(`SELECT FROM users 
-    WHERE email = $1
-    RETURNING username, email`);
+    let result = await db.query(
+      `SELECT username, email FROM users 
+    WHERE email = $1`,
+      [email]
+    );
     const user = result.rows[0];
-    if (!user) throw new NotFoundError(`No User With Email: ${email}`);
+    if (!user) throw new NotFoundError(`No User Found With Email: ${email}`);
   }
 }
 
