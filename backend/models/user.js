@@ -199,18 +199,28 @@ class User {
 
   static async generatePasswordReset(username) {
     const resetPasswordToken = crypto.randomBytes(20).toString('hex');
-    const resetPasswordExpires = (Date.now() + 3600000) / 1000.0;
+    const resetPasswordExpires = (Date.now() + 7200000) / 1000.0; // Expires in Two Hours
     let result = await db.query(
       `UPDATE users 
-    SET reset_password_token = $1, reset_password_expires = to_timestamp($2), reset_password_token_used = $3
+    SET reset_password_token = $1, reset_password_expires = TO_TIMESTAMP($2), reset_password_token_used = $3
     WHERE username = $4
     RETURNING username, first_name AS "firstName", last_name AS "lastName",
     email, reset_password_token AS "resetPasswordToken",
     reset_password_expires AS "resetPasswordExpires",
     reset_password_token_used AS "resetPasswordTokenUsed",
     is_admin AS "isAdmin"`,
-      []
+      [resetPasswordToken, resetPasswordExpires, false, username]
     );
+    const user = result.rows[0];
+    return user;
+  }
+
+  static async findUserEmail(email) {
+    let result = await db.query(`SELECT FROM users 
+    WHERE email = $1
+    RETURNING username, email`);
+    const user = result.rows[0];
+    if (!user) throw new NotFoundError(`No User With Email: ${email}`);
   }
 }
 

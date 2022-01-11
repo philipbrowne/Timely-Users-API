@@ -61,4 +61,15 @@ router.post('/register', async function (req, res, next) {
   }
 });
 
+router.post('/recover', async function (req, res, next) {
+  try {
+    const userCheck = User.findUserEmail(req.body.email);
+    const user = User.generatePasswordReset(userCheck.username);
+    console.log(user);
+    return res.status(201).json({ user });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
