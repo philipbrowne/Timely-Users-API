@@ -12,11 +12,18 @@ const userAuthSchema = require('../schemas/userAuth.json');
 const userRegisterSchema = require('../schemas/userRegister.json');
 const userResetPasswordSchema = require('../schemas/userResetPassword.json');
 const { BadRequestError } = require('../expressError');
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(
-  process.env.SENDGRID_API_KEY ||
-    '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'
-);
+const { FROM_EMAIL, FROM_PW } = require('../creds');
+const nodemailer = require('nodemailer');
+const smtpConfig = {
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: FROM_EMAIL,
+    pass: FROM_PW,
+  },
+};
+const transporter = nodemailer.createTransport(smtpConfig);
 
 /** POST /auth/token:  { username, password } => { token }
  *
@@ -32,7 +39,6 @@ router.post('/token', async function (req, res, next) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
-
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
     const token = createToken(user);
@@ -82,11 +88,11 @@ router.post('/recover', async function (req, res, next) {
     const resetURL = `http://${req.headers.host}/auth/reset/${user.resetPasswordToken}`;
     const mailOptions = {
       to: user.email,
-      from: 'pbrowne@gmail.com',
+      from: FROM_EMAIL,
       subject: 'Password Reset Request',
       text: `Hello ${user.username}\n\nPlease visit ${resetURL} to reset your password.\n\nIf you did not request this, please ignore this email.`,
     };
-    sgMail.send(mailOptions, (err, result) => {
+    transporter.sendMail(mailOptions, (err, result) => {
       if (err) return next({ message: err.message });
       return res.status(200).json({
         message: `A reset email has been sent to ${user.email} - please check your spam folder.`,
@@ -133,20 +139,23 @@ router.post('/reset/:token', async function (req, res, next) {
         error: 'Password and Confirm Password Must Be the Same',
       });
     await User.resetPassword(userCheck.username, req.body.password);
+    const updatedUser = await User.authenticate(
+      userCheck.username,
+      req.body.password
+    );
+    const token = createToken(updatedUser);
     const mailOptions = {
-      to: user.email,
-      from: 'pbrowne@gmail.com',
+      to: updatedUser.email,
+      from: FROM_EMAIL,
       subject: 'Password Reset Confirmation',
-      text: `Hello ${user.username}\n\nYour password was recently reset.`,
+      text: `Hello ${updatedUser.username}\n\nYour password was recently reset\n\nYour updated token is: ${token}`,
     };
-    sgMail.send(mailOptions, (err, result) => {
+    transporter.sendMail(mailOptions, (err, result) => {
       if (err) return next(err);
       return res.status(200).json({
-        message:
-          'Your password has been successfully updated.  Please get a new token at /auth/token with your updated credentials.',
+        message: `Your password has been successfully updated.\n\nYour updated token is: ${token}`,
       });
     });
-    return res.json({ message: 'ok' });
   } catch (err) {
     return next(err);
   }
