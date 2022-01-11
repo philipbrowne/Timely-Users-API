@@ -26,12 +26,10 @@ app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 
 app.get('/', function (req, res, next) {
-  return res
-    .status(200)
-    .json({
-      message:
-        'Welcome to App - please register with username, password, email, firstName, and lastName at /auth/register',
-    });
+  return res.status(200).json({
+    message:
+      'Welcome to Timely Users App - please register with username, password, email, firstName, and lastName at /auth/register',
+  });
 });
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
