@@ -198,9 +198,11 @@ class User {
   }
 
   static async generatePasswordReset(username) {
+    const resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    const resetPasswordExpires = (Date.now() + 3600000) / 1000.0;
     let result = await db.query(
       `UPDATE users 
-    SET reset_password_token = $1, reset_password_expires = $2, reset_password_token_used = $3
+    SET reset_password_token = $1, reset_password_expires = to_timestamp($2), reset_password_token_used = $3
     WHERE username = $4
     RETURNING username, first_name AS "firstName", last_name AS "lastName",
     email, reset_password_token AS "resetPasswordToken",
