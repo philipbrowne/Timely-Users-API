@@ -17,7 +17,6 @@ CREATE TABLE users (
   email TEXT NOT NULL
   CHECK (position('@' IN email) > 1),
   reset_password_token VARCHAR UNIQUE,
-  reset_password_expires TIME,
   reset_password_token_used BOOLEAN,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -45,7 +44,6 @@ CREATE TABLE users (
   email TEXT NOT NULL
   CHECK (position('@' IN email) > 1),
 reset_password_token VARCHAR UNIQUE,
-  reset_password_expires TIME,
   reset_password_token_used BOOLEAN,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );

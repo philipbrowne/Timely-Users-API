@@ -11,6 +11,9 @@ services:
       - /app/node_modules
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/timely
+      SEND_GRID_API_KEY: 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
+      FROM_EMAIL: pbrowne@gmail.com
+
     depends_on:
       - postgres
   postgres:

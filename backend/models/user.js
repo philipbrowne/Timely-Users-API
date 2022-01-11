@@ -202,15 +202,14 @@ class User {
     const resetPasswordExpires = (Date.now() + 7200000) / 1000.0; // Expires in Two Hours
     let result = await db.query(
       `UPDATE users 
-    SET reset_password_token = $1, reset_password_expires = TO_TIMESTAMP($2), reset_password_token_used = $3
-    WHERE username = $4
+    SET reset_password_token = $1, reset_password_token_used = $2
+    WHERE username = $3
     RETURNING username, 
     first_name AS "firstName", last_name AS "lastName",
     email, reset_password_token AS "resetPasswordToken",
-    reset_password_expires AS "resetPasswordExpires",
     reset_password_token_used AS "resetPasswordTokenUsed",
     is_admin AS "isAdmin"`,
-      [resetPasswordToken, resetPasswordExpires, false, username]
+      [resetPasswordToken, false, username]
     );
     const user = result.rows[0];
     return user;
@@ -218,12 +217,48 @@ class User {
 
   static async findUserEmail(email) {
     let result = await db.query(
-      `SELECT username, email FROM users 
-    WHERE email = $1`,
+      `SELECT username,
+                  email
+           FROM users
+           WHERE email = $1`,
       [email]
     );
     const user = result.rows[0];
     if (!user) throw new NotFoundError(`No User Found With Email: ${email}`);
+    return user;
+  }
+
+  static async verifyPasswordToken(token) {
+    let result = await db.query(
+      `SELECT username,
+          email, reset_password_token AS "resetPasswordToken",
+          reset_password_token_used AS "resetPasswordTokenUsed"
+          FROM users
+          WHERE reset_password_token = $1`,
+      [token]
+    );
+    const user = result.rows[0];
+    if (!user) throw new NotFoundError(`Invalid Token ${token}`);
+    if (user.resetPasswordTokenUsed === true)
+      throw new BadRequestError(
+        'Token already used - please get a new reset token at /auth/recover'
+      );
+    return user;
+  }
+
+  static async resetPassword(username, password) {
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    let result = await db.query(
+      `UPDATE users 
+      SET password = $1,
+      reset_password_token_used = $2
+      WHERE username = $3
+      RETURNING username, reset_password_token_used AS "resetPasswordTokenUsed"`,
+      [hashedPassword, true, username]
+    );
+    const user = result.rows[0];
+    if (!user) throw new NotFoundError('User not found');
+    return user;
   }
 }
 
