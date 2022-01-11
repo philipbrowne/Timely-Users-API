@@ -28,9 +28,10 @@ app.use('/users', usersRoutes);
 app.get('/', function (req, res, next) {
   return res.status(200).json({
     message:
-      'Welcome to Timely Users App - please register with username, password, email, firstName, and lastName at /auth/register',
-    documentation: 'For more information on routes, please visit https://documenter.getpostman.com/view/16012846/UVXgMxHC',
-    repoURL: 'https://github.com/philipbrowne/Timely-Users-API'
+      'Welcome to Timely Users App - please register with username, password, email, firstName, and lastName at /auth/register - More information available at the documentationURL',
+    documentationURL:
+      'https://documenter.getpostman.com/view/16012846/UVXgMxHC',
+    repoURL: 'https://github.com/philipbrowne/Timely-Users-API',
   });
 });
 /** Handle 404 errors -- this matches everything */
