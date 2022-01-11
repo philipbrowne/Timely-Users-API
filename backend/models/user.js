@@ -2,6 +2,7 @@
 
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const { sqlForPartialUpdate } = require('../helpers/sql');
 const {
   NotFoundError,
@@ -194,6 +195,20 @@ class User {
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+  }
+
+  static async generatePasswordReset(username) {
+    let result = await db.query(
+      `UPDATE users 
+    SET reset_password_token = $1, reset_password_expires = $2, reset_password_token_used = $3
+    WHERE username = $4
+    RETURNING username, first_name AS "firstName", last_name AS "lastName",
+    email, reset_password_token AS "resetPasswordToken",
+    reset_password_expires AS "resetPasswordExpires",
+    reset_password_token_used AS "resetPasswordTokenUsed",
+    is_admin AS "isAdmin"`,
+      []
+    );
   }
 }
 
