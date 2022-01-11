@@ -14,7 +14,27 @@ Base URL: https://timelymd-assessment.herokuapp.com/
 
 **POST /auth/token** - Login for user. { username, password } => { token } Returns JWT Bearer token which can be used to authenticate further requests. New token can be obtained from this endpoint.
 
+Example Request:
+{
+"username" : "example_user",
+"password" : "example_password",
+"firstName" : "Example",
+"lastName" : "User",
+"email" : "exampleuser@email.com"
+}
+
+Required Fields: username, password, firstName, lastName, email
+
 **POST /auth/register** - User must include { username, password, firstName, lastName, email } Returns JWT token which can be used to authenticate further requests.
+
+Example Request:
+
+    {
+    "username" : "example_user",
+    "password" : "example_password"
+    }
+
+Required Fields: username, password
 
 **POST /auth/recover** - Sends password reset link to user. {email} => Password Reset Email. Must include valid user email address. Uses Nodemailer
 
@@ -24,7 +44,7 @@ Base URL: https://timelymd-assessment.herokuapp.com/
 
 ### User **Routes**
 
-**GET /users/** - Returns list of all users. Authorization required: Logged In as User or Admin.
+**GET /users/** - Returns list of all users. Authorization required: Logged In as Admin with Bearer Token.
 
 **POST /users/** - Adds a new user. This is not the registration endpoint --- instead, this is only for admin users to add new users. The new user being added can be an admin using the isAdmin property (true/false). Required: {username, password, firstName, lastName, email}
 
