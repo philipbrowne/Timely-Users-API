@@ -103,7 +103,7 @@ To deploy locally in Docker Container:
 
 Access above routes at http://localhost:3000/ using Curl, Postman, or Insomnia
 
-You will need to change credentials in docker-compose file to a GMail user/pw under the environment variables FROM_USER, FROM_PW . I have put the environment variables in the Docker Deployment but they are not listed publicly.
+You will need to change credentials in docker-compose file to a GMail user/pw under the environment variables FROM_USER, FROM_PW in order to use the Password Recovery routes. I have put the environment variables in the Docker Deployment as "secret" for now.  The credentials are set in environment variables on the Heroku Deployment.
 
 ## Testing locally
 
