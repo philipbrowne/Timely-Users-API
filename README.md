@@ -2,6 +2,8 @@
 
 More Detailed API Documentation at https://documenter.getpostman.com/view/16012846/UVXgMxHC
 
+Base URL: https://timelymd-assessment.herokuapp.com/
+
 ## Model:
 
 **User** {username, first_name, last_name, email, reset_password_token, reset_password_token_used, is_admin}
