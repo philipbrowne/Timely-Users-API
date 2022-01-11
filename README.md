@@ -34,6 +34,10 @@ Base URL: https://timelymd-assessment.herokuapp.com/
 
 **DELETE /users/:username** - Deletes User. Authorization required: Either logged in as the current user in URL or Admin.
 
+## Heroku Deployment
+
+This project is deployed on Heroku at https://timelymd-assessment.herokuapp.com
+
 ## Local Deployment in Docker Container
 
 **Requirements: Docker**
@@ -44,10 +48,15 @@ To deploy locally in Docker Container:
 
 Access above routes at http://localhost:3000/ using Curl, Postman, or Insomnia
 
+You will need to change credentials in docker-compose file to a GMail user/pw under the environment variables FROM_USER, FROM_PW . I have put the environment variables in the Docker Deployment but they are not listed publicly.
+
 ## Testing locally
 
 To run tests using Jest in local environment:
 
-    cd backend
+    git clone https://github.com/philipbrowne/Timely-Users-API.git
+    cd Timely-Users-API/backend
     npm install
     npm test
+
+This does not require the Environment variables for Email User/Password to be added.

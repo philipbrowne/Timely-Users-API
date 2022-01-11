@@ -11,6 +11,8 @@ services:
       - /app/node_modules
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/timely
+      FROM_EMAIL: secret # Use Gmail Account Credentials - Email Address - I have this set up in Heroku to timely.email.sender@gmail.com
+      FROM_PW: secret # Use Gmail Account Credentials - Email Password
     depends_on:
       - postgres
   postgres:
@@ -23,7 +25,7 @@ services:
     restart: always
     environment:
       - 'POSTGRES_PASSWORD=postgres'
-    # volumes:
-    #   - database-data:/var/lib/postgresql/data/
-# volumes:
-#   # database-data:
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+volumes:
+  database-data:

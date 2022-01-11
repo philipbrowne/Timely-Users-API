@@ -12,7 +12,8 @@ const userAuthSchema = require('../schemas/userAuth.json');
 const userRegisterSchema = require('../schemas/userRegister.json');
 const userResetPasswordSchema = require('../schemas/userResetPassword.json');
 const { BadRequestError } = require('../expressError');
-const { FROM_EMAIL, FROM_PW } = require('../creds');
+const FROM_EMAIL = process.env.FROM_EMAIL;
+const FROM_PW = process.env.FROM_PW;
 const nodemailer = require('nodemailer');
 const smtpConfig = {
   host: 'smtp.gmail.com',
