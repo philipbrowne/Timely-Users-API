@@ -1,4 +1,4 @@
-# TimelyMD Assessment - RESTful User API
+# Timely RESTful User API
 
 More Detailed API Documentation at https://documenter.getpostman.com/view/16012846/UVXgMxHC
 
