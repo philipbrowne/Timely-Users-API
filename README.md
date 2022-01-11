@@ -15,13 +15,14 @@ Base URL: https://timelymd-assessment.herokuapp.com/
 **POST /auth/token** - Login for user. { username, password } => { token } Returns JWT Bearer token which can be used to authenticate further requests. New token can be obtained from this endpoint.
 
 Example Request:
-{
-"username" : "example_user",
-"password" : "example_password",
-"firstName" : "Example",
-"lastName" : "User",
-"email" : "exampleuser@email.com"
-}
+
+    {
+    "username" : "example_user",
+    "password" : "example_password",
+    "firstName" : "Example",
+    "lastName" : "User",
+    "email" : "exampleuser@email.com"
+    }
 
 Required Fields: username, password, firstName, lastName, email
 
@@ -38,6 +39,14 @@ Required Fields: username, password
 
 **POST /auth/recover** - Sends password reset link to user. {email} => Password Reset Email. Must include valid user email address. Uses Nodemailer
 
+Example Request:
+
+    {
+    "email" : "exampleuser@email.com"
+    }
+
+Required Fields: email
+   
 **GET /auth/reset/:token** - Reset Password Form using link generated and emailed to user. Password and Confirm password in form must be identical and between 6-20 characters long.
 
 **POST /auth/reset/:token** - Resets Password for user using above form. Returns new JWT Bearer Token to authenticate further requests.
@@ -48,9 +57,35 @@ Required Fields: username, password
 
 **POST /users/** - Adds a new user. This is not the registration endpoint --- instead, this is only for admin users to add new users. The new user being added can be an admin using the isAdmin property (true/false). Required: {username, password, firstName, lastName, email}
 
+Example Request:
+
+    {
+    "username" : "example_user",
+    "password" : "example_password",
+    "firstName" : "Example",
+    "lastName" : "User",
+    "email" : "exampleuser@email.com",
+    "isAdmin" : true
+    }
+
+Required Fields: username, password, firstName, lastName, email, isAdmin
+
 **GET /users/:username** - Returns { username, firstName, lastName, isAdmin } for specific username if found. Authorization required: Either logged in as the current user in URL or Admin.
 
 **PATCH /users/:username** - Updates user. Returns { username, firstName, lastName, email, isAdmin } Authorization required: Either logged in as the current user in URL or Admin.
+
+Example Request:
+
+    {
+    "username" : "new_example_user",
+    "password" : "new_example_password",
+    "firstName" : "Updated Example",
+    "lastName" : "User2",
+    "email" : "exampleuser2email.com",
+    "isAdmin" : false
+    }
+
+No Required Fields
 
 **DELETE /users/:username** - Deletes User. Authorization required: Either logged in as the current user in URL or Admin.
 
